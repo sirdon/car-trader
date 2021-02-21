@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import { Button } from "@material-ui/core";
 import { useRouter } from "next/dist/client/router";
+import Head from "next/head";
 
 const useStyles = makeStyles((theme) => ({
 
@@ -32,6 +33,9 @@ export default function CarDetails({ car }: CarDetailsProps) {
   }
   return ( //make, model, year, kilometers, fuelType, price, photoUrl, details
     <div>
+      <Head>
+        <title>{car.make+ ' '+ car.model}</title>
+      </Head>
       <Paper className={classes.paper}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6} md={5}>

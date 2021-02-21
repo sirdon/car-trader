@@ -50,7 +50,7 @@ export default function Search({ makes, models, singleColumn }: SearchProps) {
                   labelId="search-make"
                   label="Make"
                 >
-                  <MenuItem value="all">
+                  <MenuItem  value="all">
                     <em>All Makes</em>
                   </MenuItem>
                   {makes.map(make => (
@@ -93,7 +93,7 @@ export default function Search({ makes, models, singleColumn }: SearchProps) {
                     <em>No Max</em>
                   </MenuItem>
                   {prices.map(price => (
-                    <MenuItem value={price}>
+                    <MenuItem key={price} value={price}>
                       {price}
                     </MenuItem>
                   ))}
