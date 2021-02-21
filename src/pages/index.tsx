@@ -16,15 +16,17 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export interface HomeProps {
+export interface SearchProps {
   makes: Make[];
   models: Model[];
+  singleColumn?: boolean;
 }
 
 const prices = [500, 1000, 5000, 15000, 25000, 50000, 250000];
-export default function Home({ makes, models }: HomeProps) {
+export default function Search({ makes, models, singleColumn }: SearchProps) {
   const classes = useStyles();
   const { query } = useRouter();
+  const smValue = singleColumn ? 12: 6;
   const initialValues = {
     make: getAsString(query.make) || 'all',
     model: getAsString(query.model) || 'all',
@@ -33,7 +35,7 @@ export default function Home({ makes, models }: HomeProps) {
   }
   return <Formik initialValues={initialValues} onSubmit={(values) => {
     router.push({
-      pathname: '/',
+      pathname: '/cars',
       query : {...values, page:1}
     }, undefined, { shallow:true})
    }}>
@@ -41,7 +43,7 @@ export default function Home({ makes, models }: HomeProps) {
       <Form>
         <Paper elevation={5} className={classes.paper}>
           <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={smValue}>
               <FormControl fullWidth variant="outlined" >
                 <InputLabel id="search-make">Make</InputLabel>
                 <Field name="make" as={Select}
@@ -59,10 +61,10 @@ export default function Home({ makes, models }: HomeProps) {
                 </Field>
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={smValue}>
             <ModelSelect make={values.make} name="model" models={models} ></ModelSelect>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={smValue}>
               <FormControl fullWidth variant="outlined" >
                 <InputLabel id="search-min-price">Min Price</InputLabel>
                 <Field name="minPrice" as={Select}
@@ -80,7 +82,7 @@ export default function Home({ makes, models }: HomeProps) {
                 </Field>
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={smValue}>
               <FormControl fullWidth variant="outlined" >
                 <InputLabel id="search-max-price">Max Price</InputLabel>
                 <Field name="maxPrice" as={Select}
@@ -121,6 +123,7 @@ export function ModelSelect({models, make, ...props}: ModelSelectProps){
   });
 
   const {data} = useSWR<Model[]>('/api/models?make=' + make,{
+    dedupingInterval: 60000,
     onSuccess: (newValues) =>{
       if(!newValues.map(a=>a.model).includes(field.value)){
         setFieldValue('model', 'all')
@@ -153,8 +156,5 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const [makes, models] = await Promise.all([
     getMakes(), getModels(make)
   ])
-  // const makes = await getMakes();
-  // const models = await getModels(make);
-  
   return { props: { makes, models } };
 }
