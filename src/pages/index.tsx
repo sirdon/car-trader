@@ -155,5 +155,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   ])
   // const makes = await getMakes();
   // const models = await getModels(make);
+  
   return { props: { makes, models } };
 }
